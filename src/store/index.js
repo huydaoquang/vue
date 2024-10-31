@@ -7,6 +7,7 @@ const store = createStore({
 		return {
 			user: localStorage.getItem("user") || null,
 			token: localStorage.getItem("accessToken") || null,
+			employees: [],
 		};
 	},
 	mutations: {
@@ -19,6 +20,10 @@ const store = createStore({
 		LOGOUT(state) {
 			state.user = null;
 			state.token = null;
+			state.employees = [];
+		},
+		SET_EMPLOYEES(state, employees) {
+			state.employees = employees; // Gán danh sách nhân viên vào state
 		},
 	},
 	actions: {
@@ -104,6 +109,21 @@ const store = createStore({
 				localStorage.removeItem("user");
 			}
 		},
+
+		async fetchEmployees({ commit }) {
+			try {
+				const response = await api.get(`/employees-limit`, {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+					},
+				});
+				console.log("response::::::", response.data);
+
+				commit("SET_EMPLOYEES", response.data.employees);
+			} catch (error) {
+				console.error("Fetch employees failed:", error);
+			}
+		},
 	},
 	getters: {
 		isAuthenticated(state) {
@@ -111,6 +131,9 @@ const store = createStore({
 		},
 		getUser(state) {
 			return state.user;
+		},
+		getEmployees(state) {
+			return state.employees;
 		},
 	},
 });

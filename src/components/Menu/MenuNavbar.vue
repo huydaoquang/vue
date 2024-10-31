@@ -1,8 +1,8 @@
 <template>
-	<fwb-dropdown>
+	<fwb-dropdown :text="user[0].toUpperCase()">
 		<fwb-list-group>
 			<fwb-list-group-item class="hover:bg-gray-200 cursor-pointer">
-				Profile
+				{{ user }}
 			</fwb-list-group-item>
 			<fwb-list-group-item class="hover:bg-gray-200 cursor-pointer">
 				Settings
@@ -24,9 +24,11 @@
 import { FwbDropdown, FwbListGroup, FwbListGroupItem } from "flowbite-vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { computed } from "vue";
 
 const store = useStore();
 const router = useRouter();
+const user = computed(() => store.getters.getUser);
 
 const handleLogout = async () => {
 	await store.dispatch("logout");
@@ -42,13 +44,3 @@ const handleLogout = async () => {
 	cursor: pointer;
 }
 </style>
-
-<script>
-import { mapGetters } from "vuex";
-export default {
-	name: "MenuNavbar",
-	computed: {
-		...mapGetters(["getUser"]),
-	},
-};
-</script>
