@@ -42,6 +42,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { useToast } from "vue-toastification";
 
 export default {
 	data() {
@@ -54,9 +55,14 @@ export default {
 	methods: {
 		...mapActions(["login"]),
 		async handleLogin() {
+			const toast = useToast();
 			try {
-				await this.login({ username: this.username, password: this.password });
-				this.$router.push("/"); // Chuyển hướng về trang chính sau khi đăng nhập
+				await this.login({
+					username: this.username,
+					password: this.password,
+				});
+				this.$router.push("/");
+				toast.success("Đăng nhập thành công!");
 			} catch (error) {
 				this.error = "Đăng nhập thất bại! Vui lòng kiểm tra lại.";
 			}

@@ -9,7 +9,7 @@
 					>Home</router-link
 				>
 			</div>
-			<div class="hidden md:flex space-x-8">
+			<div class="hidden md:flex md:items-center space-x-8">
 				<router-link
 					to="/login"
 					exact-active-class="font-bold text-yellow-300"
@@ -28,6 +28,14 @@
 					class="text-white"
 					>Products</router-link
 				>
+				<div class="flex items-center gap-2 text-white">
+					<p>{{ user }}</p>
+					<img
+						class="w-10 h-10 rounded-full"
+						src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeRCsVvBWpqMB7xG-St5geqC7R_E3io4ksuQ&s"
+						alt="Rounded avatar"
+					/>
+				</div>
 			</div>
 			<button
 				@click="toggleMenu"
@@ -75,9 +83,11 @@
 <script>
 export default {
 	name: "NavbarLayout",
+
 	data() {
 		return {
 			isMenuOpen: false,
+			user: localStorage.getItem("user"),
 		};
 	},
 	methods: {

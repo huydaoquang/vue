@@ -39,6 +39,7 @@ const store = createStore({
 
 				localStorage.setItem("accessToken", access_token);
 				localStorage.setItem("refreshToken", refresh_token);
+				localStorage.setItem("user", user);
 			} catch (error) {
 				console.error("Login failed:", error);
 				throw error;
