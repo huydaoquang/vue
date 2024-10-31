@@ -6,7 +6,7 @@ const store = createStore({
 	state() {
 		return {
 			user: null,
-			token: null,
+			token: localStorage.getItem("accessToken") || null,
 		};
 	},
 	mutations: {
@@ -24,10 +24,13 @@ const store = createStore({
 	actions: {
 		async login({ commit }, username, password) {
 			try {
-				const response = await axios.post("http://127.0.0.1:5000/login", {
-					username,
-					password,
-				});
+				const response = await axios.post(
+					`${process.env.VUE_APP_API_URL}/login`,
+					{
+						username,
+						password,
+					}
+				);
 
 				console.log("response::::", response);
 
@@ -45,10 +48,49 @@ const store = createStore({
 				throw error;
 			}
 		},
-		logout({ commit }) {
-			commit("LOGOUT");
-			localStorage.removeItem("accessToken");
-			localStorage.removeItem("refreshToken");
+		async register({ commit }, { username, password }) {
+			try {
+				const response = await axios.post(
+					`${process.env.VUE_APP_API_URL}/register`,
+					{
+						username,
+						password,
+					}
+				);
+
+				console.log("response::::", response);
+
+				const { user, access_token, refresh_token } = response.data;
+				console.log("res", { user, access_token, refresh_token });
+
+				commit("SET_USER", user);
+				commit("SET_TOKEN", access_token);
+
+				localStorage.setItem("accessToken", access_token);
+				localStorage.setItem("refreshToken", refresh_token);
+				localStorage.setItem("user", user);
+			} catch (error) {
+				console.error("Register failed:", error);
+				throw error;
+			}
+		},
+		async logout({ commit }) {
+			try {
+				await axios.post(
+					`${process.env.VUE_APP_API_URL}/logout`,
+					{},
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+						},
+					}
+				);
+				commit("LOGOUT");
+				localStorage.removeItem("accessToken");
+				localStorage.removeItem("refreshToken");
+			} catch (error) {
+				console.error("Logout failed:", error);
+			}
 		},
 	},
 	getters: {
