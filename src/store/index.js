@@ -1,11 +1,11 @@
 // src/store.js
 import { createStore } from "vuex";
-import axios from "axios";
+import api from "../axios";
 
 const store = createStore({
 	state() {
 		return {
-			user: null,
+			user: localStorage.getItem("user") || null,
 			token: localStorage.getItem("accessToken") || null,
 		};
 	},
@@ -24,13 +24,10 @@ const store = createStore({
 	actions: {
 		async login({ commit }, username, password) {
 			try {
-				const response = await axios.post(
-					`${process.env.VUE_APP_API_URL}/login`,
-					{
-						username,
-						password,
-					}
-				);
+				const response = await api.post(`/login`, {
+					username,
+					password,
+				});
 
 				console.log("response::::", response);
 
@@ -50,13 +47,10 @@ const store = createStore({
 		},
 		async register({ commit }, { username, password }) {
 			try {
-				const response = await axios.post(
-					`${process.env.VUE_APP_API_URL}/register`,
-					{
-						username,
-						password,
-					}
-				);
+				const response = await api.post(`/register`, {
+					username,
+					password,
+				});
 
 				console.log("response::::", response);
 
@@ -74,10 +68,24 @@ const store = createStore({
 				throw error;
 			}
 		},
+		async refreshToken({ commit }) {
+			try {
+				const response = await api.post(`/refresh-token`, {
+					refresh_token: localStorage.getItem("refreshToken"),
+				});
+				const { access_token } = response.data;
+				commit("SET_TOKEN", access_token);
+				localStorage.setItem("accessToken", access_token);
+			} catch (error) {
+				console.error("Refresh token failed:", error);
+				throw error; // Hoặc logout nếu cần
+			}
+		},
 		async logout({ commit }) {
 			try {
-				await axios.post(
-					`${process.env.VUE_APP_API_URL}/logout`,
+				// Gọi API logout nếu cần
+				await api.post(
+					`/logout`,
 					{},
 					{
 						headers: {
@@ -85,11 +93,15 @@ const store = createStore({
 						},
 					}
 				);
+			} catch (error) {
+				console.error("Logout failed:", error);
+				// Có thể xử lý thêm thông báo hoặc logic khác nếu logout thất bại
+			} finally {
+				// Thực hiện logout trong Vuex
 				commit("LOGOUT");
 				localStorage.removeItem("accessToken");
 				localStorage.removeItem("refreshToken");
-			} catch (error) {
-				console.error("Logout failed:", error);
+				localStorage.removeItem("user");
 			}
 		},
 	},
