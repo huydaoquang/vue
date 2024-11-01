@@ -1,6 +1,7 @@
 // src/axios.js
 import axios from "axios";
-import store from "./store"; // Import store để gọi action logout
+import store from "./store";
+import { useRouter } from "vue-router"; // Import store để gọi action logout
 
 const api = axios.create({
 	baseURL: process.env.VUE_APP_API_URL,
@@ -36,6 +37,7 @@ api.interceptors.response.use(
 			} catch (refreshError) {
 				// Nếu refresh token không thành công, gọi logout
 				await store.dispatch("logout");
+				useRouter().push("/login");
 				return Promise.reject(refreshError);
 			}
 		}

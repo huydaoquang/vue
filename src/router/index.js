@@ -6,6 +6,7 @@ import Login from "../views/UserLogin.vue";
 import Register from "../views/UserRegister.vue";
 import ProductManagement from "../views/ProductManagement.vue";
 import ListUser from "../views/ListUser.vue";
+import ListEmployees from "../views/ListEmployees.vue";
 
 const routes = [
 	{ path: "/", component: Home },
@@ -17,6 +18,11 @@ const routes = [
 		meta: { requiresAuth: true },
 	},
 	{ path: "/listUser", component: ListUser, meta: { requiresAuth: true } },
+	{
+		path: "/ListEmployees",
+		component: ListEmployees,
+		meta: { requiresAuth: true },
+	},
 ];
 
 const router = createRouter({

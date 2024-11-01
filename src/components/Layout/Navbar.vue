@@ -38,6 +38,13 @@
 					class="text-white"
 					>List User</router-link
 				>
+				<router-link
+					to="/ListEmployees"
+					v-if="isAuthenticated"
+					exact-active-class="font-bold text-yellow-300"
+					class="text-white"
+					>List Employees</router-link
+				>
 				<div class="flex items-center gap-2 text-white" v-if="isAuthenticated">
 					<DropdownMenu />
 				</div>

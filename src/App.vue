@@ -2,7 +2,9 @@
 	<div id="app">
 		<Navbar />
 		<!-- Thêm Navbar nếu bạn có -->
-		<router-view />
+		<div class="container mx-auto">
+			<router-view />
+		</div>
 		<!-- Sử dụng router-view để hiển thị các view -->
 	</div>
 </template>

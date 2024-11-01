@@ -8,6 +8,7 @@ const store = createStore({
 			user: localStorage.getItem("user") || null,
 			token: localStorage.getItem("accessToken") || null,
 			employees: [],
+			isLoading: false,
 		};
 	},
 	mutations: {
@@ -24,6 +25,9 @@ const store = createStore({
 		},
 		SET_EMPLOYEES(state, employees) {
 			state.employees = employees; // Gán danh sách nhân viên vào state
+		},
+		SET_LOADING(state, isLoading) {
+			state.isLoading = isLoading; // Cập nhật trạng thái loading
 		},
 	},
 	actions: {
@@ -110,20 +114,28 @@ const store = createStore({
 			}
 		},
 
-		async fetchEmployees({ commit }) {
+		async fetchEmployees({ commit }, { page = 1, limit = 10 }) {
 			try {
+				commit("SET_LOADING", true);
 				const response = await api.get(`/employees-limit`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
 					},
+					params: {
+						page,
+						limit,
+					},
 				});
 				console.log("response::::::", response.data);
-
-				commit("SET_EMPLOYEES", response.data.employees);
+		
+				commit("SET_EMPLOYEES", response.data);
 			} catch (error) {
 				console.error("Fetch employees failed:", error);
+			} finally {
+				commit("SET_LOADING", false); // Kết thúc loading
 			}
-		},
+		}
+		
 	},
 	getters: {
 		isAuthenticated(state) {
