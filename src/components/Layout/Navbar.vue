@@ -1,5 +1,5 @@
 <template>
-	<nav class="bg-blue-500 p-4">
+	<nav class="bg-blue-500 p-4" v-if="!isLoading"> 
 		<div class="container mx-auto flex justify-between items-center">
 			<div>
 				<router-link
@@ -93,6 +93,11 @@
 </template>
 <script setup>
 import DropdownMenu from "../Menu/MenuNavbar.vue"; // Import component DropdownMenu
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const isLoading = computed(() => store.state.isLoading);
 </script>
 <script>
 import { mapGetters } from "vuex";

@@ -114,7 +114,7 @@ const store = createStore({
 			}
 		},
 
-		async fetchEmployees({ commit }, { page = 1, limit = 10 }) {
+		async fetchEmployees({ commit }, {searchQuery = '', page = 1, limit = 10 }) {
 			try {
 				commit("SET_LOADING", true);
 				const response = await api.get(`/employees-limit`, {
@@ -124,6 +124,7 @@ const store = createStore({
 					params: {
 						page,
 						limit,
+						search: searchQuery,
 					},
 				});
 				console.log("response::::::", response.data);
@@ -134,7 +135,38 @@ const store = createStore({
 			} finally {
 				commit("SET_LOADING", false); // Kết thúc loading
 			}
-		}
+		},
+		async deleteEmployee({ commit }, id) {
+			try {
+				// commit("SET_LOADING", true);
+				await api.delete(`/employees/${id}`, {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+					},
+				});
+			} catch (error) {
+				console.error("Delete employee failed:", error);
+				throw error;
+			} finally {
+				commit("SET_LOADING", false);
+			}
+		},
+		async addEmployee({ commit }, employeeData) {
+			try {
+				const response = await api.post(`/employees`, employeeData, {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+					},
+				});
+				console.log('res:::::::::', response.data);
+			
+			} catch (error) {
+				console.error("Add employee failed:", error);
+				throw error; // Xử lý thêm nếu cần
+			}finally {
+				commit("SET_LOADING", false);
+			}
+		},
 		
 	},
 	getters: {
