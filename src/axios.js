@@ -22,8 +22,8 @@ api.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		// Kiểm tra nếu lỗi do token hết hạn
-		if (error.response && error.response.status === 401) {
+		const token = localStorage.getItem("accessToken");
+		if (token && error.response && error.response.status === 401) {
 			try {
 				// Gọi action refresh token
 				await store.dispatch("refreshToken");

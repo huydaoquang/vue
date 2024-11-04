@@ -61,17 +61,10 @@ const store = createStore({
 					password,
 				});
 
-				console.log("response::::", response);
-
-				const { user, access_token, refresh_token } = response.data;
-				console.log("res", { user, access_token, refresh_token });
+				const { user } = response.data;
 
 				commit("SET_USER", user);
-				commit("SET_TOKEN", access_token);
 
-				localStorage.setItem("accessToken", access_token);
-				localStorage.setItem("refreshToken", refresh_token);
-				localStorage.setItem("user", user);
 			} catch (error) {
 				console.error("Register failed:", error);
 				throw error;

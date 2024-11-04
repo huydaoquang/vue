@@ -45,7 +45,7 @@ export default {
 					username: this.username,
 					password: this.password,
 				});
-				this.$router.push("/");
+				this.$router.push("/login");
 				toast.success("Đăng ký thành công!");
 			} catch (error) {
 				console.error("Error:", error);
